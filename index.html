@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BondStats Monetary System Map™</title>
+  <meta name="description" content="An interactive BondStats visual map showing how central banks, commercial banks, bonds, investors, currencies, inflation, and the real economy connect inside the modern monetary system." />
+  <meta name="theme-color" content="#06111f" />
+  <style>
+    :root{
+      --bg:#06111f;
+      --bg2:#081827;
+      --panel:#0b1d31cc;
+      --panel2:#102a44cc;
+      --text:#f5f7fb;
+      --muted:#9eb3c7;
+      --gold:#f6b941;
+      --gold2:#ffd77a;
+      --blue:#4fb3ff;
+      --red:#ff5964;
+      --green:#55d991;
+      --line:#315878;
+      --border:#234763;
+      --shadow:0 22px 80px rgba(0,0,0,.38);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 20% 5%,rgba(79,179,255,.18),transparent 28%),
+        radial-gradient(circle at 78% 10%,rgba(246,185,65,.16),transparent 23%),
+        radial-gradient(circle at 50% 90%,rgba(79,179,255,.11),transparent 30%),
+        linear-gradient(180deg,#050b14 0%,var(--bg) 45%,#03070d 100%);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    body::before{
+      content:"";
+      position:fixed; inset:0; pointer-events:none; opacity:.25;
+      background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size:42px 42px;
+      mask-image:linear-gradient(180deg,#000,transparent 82%);
+    }
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+    .wrap{width:min(1420px,calc(100% - 32px));margin:0 auto}
+    .topbar{
+      position:sticky;top:0;z-index:50;
+      backdrop-filter:blur(18px);
+      background:rgba(5,12,22,.76);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.02em}
+    .logo{
+      width:42px;height:42px;border-radius:12px;
+      display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--gold),#fff0a5 45%,#a56b12);
+      color:#07111d;font-weight:1000;box-shadow:0 0 28px rgba(246,185,65,.32)
+    }
+    .brand small{display:block;color:var(--muted);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
+    .links{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .nav a,.pill,.btn{
+      border:1px solid rgba(255,255,255,.11);
+      background:rgba(255,255,255,.045);
+      color:var(--text);
+      padding:10px 14px;border-radius:999px;font-weight:750;font-size:14px;
+      transition:.2s ease;
+    }
+    .nav a:hover,.pill:hover,.btn:hover{border-color:rgba(246,185,65,.55);transform:translateY(-1px);background:rgba(246,185,65,.08)}
+    .hero{padding:56px 0 28px;position:relative}
+    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;align-items:center}
+    .eyebrow{color:var(--gold2);font-weight:900;letter-spacing:.18em;text-transform:uppercase;font-size:13px;margin-bottom:14px}
+    h1{font-size:clamp(44px,6vw,86px);line-height:.94;margin:0 0 18px;letter-spacing:-.055em}
+    .tm{font-size:.34em;vertical-align:super;letter-spacing:0;color:var(--gold2);margin-left:2px}
+    .lead{font-size:clamp(17px,2vw,22px);line-height:1.55;color:#d8e4ef;max-width:820px;margin:0 0 22px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+    .btn{cursor:pointer}.btn.primary{background:linear-gradient(135deg,var(--gold),#ffdd86);color:#07111d;border-color:transparent;box-shadow:0 10px 34px rgba(246,185,65,.18)}
+    .hero-card{
+      border:1px solid rgba(246,185,65,.22);border-radius:var(--radius);padding:24px;min-height:310px;
+      background:linear-gradient(145deg,rgba(11,29,49,.82),rgba(5,11,20,.72));box-shadow:var(--shadow);position:relative;overflow:hidden
+    }
+    .hero-card::before{content:"";position:absolute;inset:-50%;background:conic-gradient(from 90deg,transparent,rgba(246,185,65,.18),transparent,rgba(79,179,255,.16),transparent);animation:spin 18s linear infinite;opacity:.65}
+    .hero-card>*{position:relative}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .mini-system{height:290px;display:grid;place-items:center}
+    .orbit{position:relative;width:min(470px,100%);height:270px}
+    .orbit .core{
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:150px;height:150px;border-radius:50%;
+      background:radial-gradient(circle at 32% 25%,#fff2aa,var(--gold) 42%,#8b5a13 82%);display:grid;place-items:center;color:#07111d;font-weight:1000;text-align:center;box-shadow:0 0 42px rgba(246,185,65,.45)
+    }
+    .mini-node{position:absolute;width:112px;height:68px;border:1px solid rgba(255,255,255,.18);border-radius:18px;background:rgba(6,17,31,.72);display:grid;place-items:center;text-align:center;color:#dce8f5;font-size:12px;font-weight:850;padding:10px}
+    .n1{left:0;top:10px}.n2{right:0;top:10px}.n3{left:0;bottom:10px}.n4{right:0;bottom:10px}.n5{left:50%;bottom:-6px;transform:translateX(-50%)}
+    .section{padding:26px 0}
+    .controls{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-bottom:18px}
+    .searchbox{display:flex;gap:10px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:8px 10px;align-items:center}
+    .searchbox input{width:100%;background:transparent;border:0;outline:0;color:var(--text);padding:8px 10px}.searchbox span{color:var(--gold);font-weight:900;padding-left:10px}
+    .filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.filter.active{background:rgba(246,185,65,.18);border-color:rgba(246,185,65,.62);color:#fff}
+    .map-shell{border:1px solid rgba(255,255,255,.1);border-radius:28px;background:linear-gradient(180deg,rgba(8,24,39,.88),rgba(5,13,23,.8));box-shadow:var(--shadow);overflow:hidden;position:relative}
+    .map-head{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .map-head h2{margin:0;font-size:22px;letter-spacing:-.02em}.map-head p{margin:4px 0 0;color:var(--muted);font-size:14px}
+    .map-actions{display:flex;gap:8px;flex-wrap:wrap}.map-actions button{cursor:pointer}
+    .map-area{position:relative;height:770px;overflow:hidden;background:radial-gradient(circle at center,rgba(79,179,255,.09),transparent 38%)}
+    .connections{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+    .connections path{fill:none;stroke:rgba(103,160,205,.36);stroke-width:2.2;stroke-linecap:round;stroke-dasharray:7 9;transition:.25s ease}.connections path.flow{stroke:rgba(246,185,65,.78);stroke-width:3;filter:drop-shadow(0 0 8px rgba(246,185,65,.45));animation:dash 1.6s linear infinite}.connections path.dim{opacity:.12}.connections path.hot{stroke:rgba(255,217,122,.95);stroke-width:4;opacity:1;filter:drop-shadow(0 0 10px rgba(246,185,65,.6))}
+    @keyframes dash{to{stroke-dashoffset:-32}}
+    .node{
+      position:absolute;z-index:5;width:174px;min-height:112px;border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:15px;cursor:pointer;
+      background:linear-gradient(145deg,rgba(16,42,68,.92),rgba(5,16,29,.94));box-shadow:0 12px 36px rgba(0,0,0,.28);transition:.22s ease;outline:0
+    }
+    .node:hover,.node:focus-visible{transform:translateY(-4px) scale(1.015);border-color:rgba(246,185,65,.65);box-shadow:0 20px 55px rgba(0,0,0,.42),0 0 0 4px rgba(246,185,65,.07)}
+    .node.active{border-color:var(--gold);box-shadow:0 20px 70px rgba(0,0,0,.48),0 0 34px rgba(246,185,65,.20)}
+    .node.dim{opacity:.26;filter:saturate(.55)}
+    .icon{width:42px;height:42px;border-radius:14px;background:rgba(246,185,65,.12);border:1px solid rgba(246,185,65,.32);display:grid;place-items:center;font-size:22px;margin-bottom:10px}
+    .node h3{margin:0 0 6px;font-size:16px;line-height:1.1}.node p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.35}.tag{display:inline-block;margin-top:10px;font-size:11px;color:#0b1220;background:var(--gold2);padding:4px 8px;border-radius:999px;font-weight:900}
+    .core-node{width:204px;min-height:134px;background:linear-gradient(145deg,rgba(246,185,65,.96),rgba(119,75,13,.94));color:#07111d;border-color:rgba(255,255,255,.24)}.core-node p{color:#162438}.core-node .icon{background:rgba(7,17,29,.12);border-color:rgba(7,17,29,.18)}
+    .detail{display:grid;grid-template-columns:1fr 310px;gap:18px;padding:20px;border-top:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.13)}
+    .detail-card{border:1px solid rgba(255,255,255,.09);border-radius:22px;background:rgba(255,255,255,.045);padding:18px;min-height:180px}.detail-card h3{margin:0 0 10px;font-size:24px}.detail-card p{color:#cbd9e5;line-height:1.55;margin:0 0 14px}.detail-card ul{margin:0;padding-left:20px;color:#cbd9e5;line-height:1.7}.learn-link{display:inline-flex;margin-top:14px;color:#08111d;background:linear-gradient(135deg,var(--gold),#ffde88);font-weight:900;padding:10px 13px;border-radius:999px}
+    .statbox{display:grid;gap:10px}.stat{border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:13px;background:rgba(6,17,31,.62)}.stat b{display:block;color:var(--gold2);font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}.stat span{color:#d6e2ed;font-size:14px;line-height:1.4}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0 38px}.card{border:1px solid rgba(255,255,255,.09);border-radius:22px;background:rgba(255,255,255,.045);padding:20px}.card h3{margin:0 0 8px}.card p{margin:0;color:#c3d1df;line-height:1.55}
+    footer{padding:26px 0 38px;color:#88a0b5}.foot{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.09);padding-top:20px}.copyright{color:#c9d6e2}.notice{font-size:13px}
+    .tooltip{position:fixed;z-index:100;display:none;max-width:280px;padding:12px 13px;border-radius:14px;border:1px solid rgba(246,185,65,.26);background:rgba(5,12,22,.96);box-shadow:0 20px 50px rgba(0,0,0,.42);color:#dfe9f2;font-size:13px;line-height:1.42;pointer-events:none}.tooltip b{color:var(--gold2)}
+    .toast{position:fixed;right:18px;bottom:18px;z-index:120;background:rgba(5,12,22,.94);border:1px solid rgba(246,185,65,.28);border-radius:16px;padding:13px 16px;box-shadow:var(--shadow);display:none;color:#e8f1f8}
+    .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:1050px){.hero-grid{grid-template-columns:1fr}.controls{grid-template-columns:1fr}.filters{justify-content:flex-start}.map-area{height:980px}.detail{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.node{width:164px}.core-node{width:184px}.links{display:none}}
+    @media(max-width:720px){.wrap{width:min(100% - 20px,1420px)}.hero{padding-top:34px}h1{font-size:42px}.lead{font-size:16px}.map-area{height:1260px}.node{width:calc(50% - 24px);min-height:104px;padding:12px}.node h3{font-size:14px}.node p{font-size:11.5px}.icon{width:36px;height:36px}.map-head{display:block}.map-actions{margin-top:12px}.detail{padding:12px}.hero-card{padding:14px}.mini-system{display:none}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <nav class="wrap nav" aria-label="Main navigation">
+      <a class="brand" href="#top" aria-label="BondStats home">
+        <span class="logo">B</span><span>BondStats<small>Visual System</small></span>
+      </a>
+      <div class="links">
+        <a href="#map">Open Map</a>
+        <a href="#modules">Modules</a>
+        <a href="#how">How to Use</a>
+        <a href="https://sites.google.com" target="_blank" rel="noopener">Visit BondStats</a>
+      </div>
+    </nav>
+  </div>
+
+  <main id="top">
+    <section class="hero wrap">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">BondStats Signature Asset · v1.0</div>
+          <h1>Monetary System Map<span class="tm">™</span></h1>
+          <p class="lead">An interactive map showing how central banks, commercial banks, government bonds, investors, currencies, inflation, and the real economy connect inside the modern financial system.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#map">Explore the Map</a>
+            <button class="btn" id="copyLinkBtn" type="button">Copy Page Link</button>
+          </div>
+        </div>
+        <div class="hero-card" aria-hidden="true">
+          <div class="mini-system">
+            <div class="orbit">
+              <div class="core">Money<br/>System</div>
+              <div class="mini-node n1">Central Banks</div>
+              <div class="mini-node n2">Bond Markets</div>
+              <div class="mini-node n3">Commercial Banks</div>
+              <div class="mini-node n4">Currencies</div>
+              <div class="mini-node n5">Real Economy</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="map" class="section wrap">
+      <div class="controls">
+        <label class="searchbox" for="searchInput"><span>Search</span><input id="searchInput" type="search" placeholder="Try: inflation, bonds, central bank, crisis..." autocomplete="off" /></label>
+        <div class="filters" aria-label="Map filters">
+          <button class="pill filter active" type="button" data-filter="all">All</button>
+          <button class="pill filter" type="button" data-filter="core">Core</button>
+          <button class="pill filter" type="button" data-filter="policy">Policy</button>
+          <button class="pill filter" type="button" data-filter="markets">Markets</button>
+          <button class="pill filter" type="button" data-filter="global">Global</button>
+          <button class="pill filter" type="button" data-filter="risk">Risk</button>
+        </div>
+      </div>
+
+      <div class="map-shell">
+        <div class="map-head">
+          <div>
+            <h2>How money moves through the system</h2>
+            <p>Click a node to reveal its role, highlight connections, and open the related BondStats guide.</p>
+          </div>
+          <div class="map-actions">
+            <button class="pill" id="animateBtn" type="button">Animate flows</button>
+            <button class="pill" id="resetBtn" type="button">Reset</button>
+          </div>
+        </div>
+        <div class="map-area" id="mapArea" aria-label="Interactive monetary system map">
+          <svg class="connections" id="connections" aria-hidden="true"></svg>
+        </div>
+        <div class="detail" id="detail">
+          <div class="detail-card">
+            <h3 id="detailTitle">Select a node</h3>
+            <p id="detailText">Choose any part of the map to understand how it connects to the modern monetary system.</p>
+            <ul id="detailBullets"></ul>
+            <a class="learn-link" id="detailLink" href="#" target="_blank" rel="noopener" style="display:none">Open related guide</a>
+          </div>
+          <aside class="statbox" aria-label="Selected node summary">
+            <div class="stat"><b>Role</b><span id="roleText">System overview</span></div>
+            <div class="stat"><b>Connected to</b><span id="connectedText">Central banks, banks, bond markets, investors, currencies, and the real economy.</span></div>
+            <div class="stat"><b>Key idea</b><span id="ideaText">Money is not one object. It is a network of institutions, assets, promises, and trust.</span></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="modules" class="wrap cards">
+      <div class="card"><h3>Clickable System Nodes</h3><p>Each node explains one part of the monetary system and highlights the connections that matter most.</p></div>
+      <div class="card"><h3>BondStats Learn Links</h3><p>Every major concept can point to a deeper BondStats education page, strengthening internal SEO.</p></div>
+      <div class="card"><h3>No API Required</h3><p>The map is an evergreen visual reference. It requires no paid data feeds, external libraries, or third-party graphics.</p></div>
+    </section>
+
+    <section id="how" class="wrap cards">
+      <div class="card"><h3>How to Use</h3><p>Start with Central Banks, follow the arrows into banks and bonds, then explore how global flows affect currencies and the real economy.</p></div>
+      <div class="card"><h3>Best Use Case</h3><p>Use it as a signature asset: link it from articles, social posts, newsletters, and country pages.</p></div>
+      <div class="card"><h3>Future Expansion</h3><p>Add separate maps for the Dollar System, Treasury Market, Repo Market, Eurodollar System, and Currency Crises.</p></div>
+    </section>
+  </main>
+
+  <div class="tooltip" id="tooltip" role="status"></div>
+  <div class="toast" id="toast">Copied.</div>
+
+  <footer class="wrap">
+    <div class="foot">
+      <div class="copyright">BondStats Monetary System Map™ · © 2025 BondStats</div>
+      <div class="notice">Educational use only. Visual design and system architecture by BondStats.</div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      'use strict';
+      const guidesBase = 'https://sites.google.com';
+      const nodes = [
+        {id:'central-bank',label:'Central Banks',icon:'🏛️',cat:'policy',x:43,y:8,role:'Policy anchor',idea:'Central banks influence money conditions through interest rates, reserves, QE, QT, and financial stability tools.',desc:'Central banks sit near the center of the monetary system. They influence short-term rates, bank reserves, liquidity, inflation expectations, and the stability of financial markets.',bullets:['Set policy rates','Provide reserves and liquidity','Act during financial stress','Influence inflation and credit conditions'],link:guidesBase},
+        {id:'government',label:'Government & Treasury',icon:'🏦',cat:'core',x:18,y:22,role:'Issuer of public debt',idea:'Governments tax, spend, borrow, and issue bonds that become core financial assets.',desc:'The government funds spending through taxation and debt issuance. Treasury securities often become the benchmark assets around which the rest of the financial system is priced.',bullets:['Issues government bonds','Funds fiscal policy','Creates benchmark risk-free assets','Influences debt sustainability'],link:guidesBase},
+        {id:'commercial-banks',label:'Commercial Banks',icon:'🏧',cat:'core',x:68,y:22,role:'Credit creation',idea:'Banks create deposits through lending and connect households, firms, central banks, and markets.',desc:'Commercial banks transform deposits, loans, payments, and reserves into the everyday monetary system used by households and businesses.',bullets:['Accept deposits','Create credit through lending','Operate payment systems','Hold reserves at central banks'],link:guidesBase},
+        {id:'money-creation',label:'Money Creation',icon:'💳',cat:'core',x:43,y:30,role:'Credit mechanism',idea:'Most modern money is created through banking activity, not simply printed as cash.',desc:'Money creation occurs when banks extend credit, when governments spend, and when central banks expand reserves. The system is based on balance sheets and confidence.',bullets:['Bank lending creates deposits','Central banks create reserves','Government spending changes balances','Confidence sustains acceptance'],link:guidesBase,core:true},
+        {id:'bond-market',label:'Bond Market',icon:'📜',cat:'markets',x:17,y:43,role:'Pricing engine',idea:'Bond yields influence borrowing costs, valuations, currencies, and capital allocation.',desc:'The bond market is where governments and companies borrow. Government bonds are especially important because they help price risk across the entire financial system.',bullets:['Prices government debt','Shapes long-term interest rates','Signals inflation and growth expectations','Provides reserve assets'],link:guidesBase},
+        {id:'investors',label:'Investors',icon:'👥',cat:'markets',x:43,y:49,role:'Capital allocators',idea:'Investors move capital between bonds, stocks, cash, commodities, and currencies based on risk and return.',desc:'Pension funds, insurers, asset managers, households, and foreign central banks allocate savings across financial assets and transmit monetary conditions into markets.',bullets:['Buy bonds and equities','Allocate savings globally','React to yield changes','Transmit risk appetite'],link:guidesBase},
+        {id:'financial-markets',label:'Financial Markets',icon:'📈',cat:'markets',x:69,y:43,role:'Market transmission',idea:'Markets translate expectations about policy, growth, inflation, and risk into prices.',desc:'Financial markets connect bonds, stocks, commodities, currencies, derivatives, and funding markets into one global pricing network.',bullets:['Price risk and return','Transmit policy expectations','Allocate capital','React to liquidity changes'],link:guidesBase},
+        {id:'interest-rates',label:'Interest Rates',icon:'%',cat:'policy',x:8,y:60,role:'Price of money',idea:'Interest rates influence borrowing, saving, asset prices, currencies, and debt sustainability.',desc:'Interest rates are one of the most important prices in the economy. They affect mortgages, government debt, corporate investment, currency values, and financial valuations.',bullets:['Affect borrowing costs','Influence savings decisions','Move bond yields','Shape currency demand'],link:guidesBase},
+        {id:'inflation',label:'Inflation',icon:'🔥',cat:'risk',x:29,y:67,role:'Purchasing power risk',idea:'Inflation changes the real value of money, wages, debt, and savings.',desc:'Inflation measures broad increases in prices. It influences central bank decisions, bond yields, real returns, consumer behavior, and political pressure.',bullets:['Erodes purchasing power','Raises policy pressure','Affects real yields','Changes debt burdens'],link:guidesBase},
+        {id:'currencies',label:'Currencies',icon:'💱',cat:'global',x:55,y:67,role:'Exchange layer',idea:'Currencies connect national monetary systems through exchange rates and capital flows.',desc:'Currencies translate one monetary system into another. Exchange rates move with interest rates, inflation, trade, confidence, and capital flows.',bullets:['Reflect relative confidence','Move with interest-rate differences','Affect imports and exports','Transmit global shocks'],link:guidesBase},
+        {id:'reserve-currencies',label:'Reserve Currencies',icon:'🌍',cat:'global',x:78,y:60,role:'Global reserve layer',idea:'Reserve currencies are held by central banks and institutions to support trade, reserves, and stability.',desc:'Reserve currencies sit at the global level of finance. They are used for trade, reserve holdings, debt issuance, and international payments.',bullets:['Held by central banks','Used in global trade','Support international payments','Require trust and deep markets'],link:guidesBase},
+        {id:'real-economy',label:'Real Economy',icon:'🏭',cat:'core',x:42,y:84,role:'Final destination',idea:'The monetary system ultimately affects jobs, production, income, consumption, and investment.',desc:'The real economy is where monetary and financial conditions affect households and businesses through wages, prices, investment, credit, and confidence.',bullets:['Businesses invest and hire','Consumers earn and spend','Credit affects demand','Inflation changes purchasing power'],link:guidesBase},
+        {id:'crises',label:'Financial Crises',icon:'⚠️',cat:'risk',x:82,y:82,role:'System stress',idea:'Crises emerge when confidence breaks down, liquidity disappears, or debt burdens become unstable.',desc:'Financial crises reveal the hidden connections inside the monetary system. Stress can spread from currencies to banks, bonds, funding markets, and the real economy.',bullets:['Currency crises','Banking crises','Debt crises','Liquidity shocks'],link:guidesBase}
+      ];
+      const edges = [
+        ['central-bank','commercial-banks'],['central-bank','interest-rates'],['central-bank','bond-market'],['central-bank','inflation'],['government','bond-market'],['government','money-creation'],['commercial-banks','money-creation'],['commercial-banks','real-economy'],['money-creation','inflation'],['money-creation','financial-markets'],['bond-market','investors'],['bond-market','interest-rates'],['bond-market','reserve-currencies'],['investors','financial-markets'],['investors','currencies'],['financial-markets','currencies'],['financial-markets','real-economy'],['interest-rates','currencies'],['inflation','currencies'],['currencies','reserve-currencies'],['reserve-currencies','crises'],['currencies','crises'],['crises','real-economy'],['inflation','crises']
+      ];
+      const mapArea = document.getElementById('mapArea');
+      const svg = document.getElementById('connections');
+      const tooltip = document.getElementById('tooltip');
+      const searchInput = document.getElementById('searchInput');
+      const detailTitle = document.getElementById('detailTitle');
+      const detailText = document.getElementById('detailText');
+      const detailBullets = document.getElementById('detailBullets');
+      const detailLink = document.getElementById('detailLink');
+      const roleText = document.getElementById('roleText');
+      const connectedText = document.getElementById('connectedText');
+      const ideaText = document.getElementById('ideaText');
+      let activeId = null;
+      let flowOn = false;
+
+      function mobile(){ return window.matchMedia('(max-width:720px)').matches; }
+      function tablet(){ return window.matchMedia('(max-width:1050px)').matches && !mobile(); }
+      function pos(n, i){
+        if(!mobile() && !tablet()) return {left:n.x+'%',top:n.y+'%'};
+        if(tablet()){
+          const col = i % 3, row = Math.floor(i/3);
+          return {left:(7 + col*31)+'%', top:(4 + row*18)+'%'};
+        }
+        const col = i % 2, row = Math.floor(i/2);
+        return {left:(4 + col*50)+'%', top:(3 + row*15)+'%'};
+      }
+      function renderNodes(){
+        mapArea.querySelectorAll('.node').forEach(el=>el.remove());
+        nodes.forEach((n,i)=>{
+          const el=document.createElement('button');
+          el.type='button'; el.className='node'+(n.core?' core-node':''); el.id='node-'+n.id; el.dataset.id=n.id; el.dataset.cat=n.cat;
+          const p=pos(n,i); el.style.left=p.left; el.style.top=p.top;
+          el.innerHTML='<div class="icon">'+n.icon+'</div><h3>'+n.label+'</h3><p>'+n.idea+'</p><span class="tag">'+n.cat+'</span>';
+          el.addEventListener('click',()=>selectNode(n.id));
+          el.addEventListener('mousemove',e=>showTooltip(e,n));
+          el.addEventListener('mouseleave',hideTooltip);
+          mapArea.appendChild(el);
+        });
+        requestAnimationFrame(drawEdges);
+      }
+      function center(el){
+        const a=mapArea.getBoundingClientRect(); const r=el.getBoundingClientRect();
+        return {x:r.left-a.left+r.width/2,y:r.top-a.top+r.height/2};
+      }
+      function drawEdges(){
+        svg.innerHTML='';
+        const rect=mapArea.getBoundingClientRect(); svg.setAttribute('viewBox','0 0 '+rect.width+' '+rect.height);
+        edges.forEach((e,idx)=>{
+          const a=document.getElementById('node-'+e[0]); const b=document.getElementById('node-'+e[1]); if(!a||!b) return;
+          const p1=center(a), p2=center(b); const dx=Math.abs(p2.x-p1.x); const c1x=p1.x+(p2.x-p1.x)*.45; const c2x=p1.x+(p2.x-p1.x)*.55; const curve=Math.min(110,dx*.35+35);
+          const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+          path.setAttribute('d','M '+p1.x+' '+p1.y+' C '+c1x+' '+(p1.y-curve)+', '+c2x+' '+(p2.y+curve)+', '+p2.x+' '+p2.y);
+          path.dataset.from=e[0]; path.dataset.to=e[1]; path.dataset.index=idx;
+          if(flowOn) path.classList.add('flow');
+          svg.appendChild(path);
+        });
+        updateHighlight();
+      }
+      function connected(id){
+        const set=new Set(); edges.forEach(([a,b])=>{if(a===id) set.add(b); if(b===id) set.add(a);}); return [...set];
+      }
+      function selectNode(id){
+        activeId=id; const n=nodes.find(x=>x.id===id); if(!n) return;
+        detailTitle.textContent=n.label; detailText.textContent=n.desc; roleText.textContent=n.role; ideaText.textContent=n.idea;
+        const c=connected(id).map(cid=>nodes.find(n=>n.id===cid)?.label).filter(Boolean); connectedText.textContent=c.length?c.join(', '):'No direct connections.';
+        detailBullets.innerHTML=n.bullets.map(b=>'<li>'+b+'</li>').join(''); detailLink.href=n.link; detailLink.style.display='inline-flex';
+        updateHighlight();
+      }
+      function updateHighlight(){
+        const allNodes=[...mapArea.querySelectorAll('.node')]; const allPaths=[...svg.querySelectorAll('path')];
+        allNodes.forEach(el=>{el.classList.remove('active','dim')}); allPaths.forEach(p=>{p.classList.remove('hot','dim')});
+        if(!activeId) return;
+        const c=new Set([activeId,...connected(activeId)]);
+        allNodes.forEach(el=>{if(el.dataset.id===activeId) el.classList.add('active'); else if(!c.has(el.dataset.id)) el.classList.add('dim');});
+        allPaths.forEach(p=>{if(p.dataset.from===activeId||p.dataset.to===activeId) p.classList.add('hot'); else p.classList.add('dim');});
+      }
+      function showTooltip(e,n){tooltip.style.display='block';tooltip.innerHTML='<b>'+n.label+'</b><br>'+n.idea; const pad=16; let x=e.clientX+pad, y=e.clientY+pad; const r=tooltip.getBoundingClientRect(); if(x+r.width>innerWidth) x=e.clientX-r.width-pad; if(y+r.height>innerHeight) y=e.clientY-r.height-pad; tooltip.style.left=x+'px'; tooltip.style.top=y+'px';}
+      function hideTooltip(){tooltip.style.display='none'}
+      function setFilter(filter){
+        document.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
+        mapArea.querySelectorAll('.node').forEach(el=>{el.style.display=(filter==='all'||el.dataset.cat===filter)?'block':'none';});
+        activeId=null; setTimeout(drawEdges,30);
+      }
+      function search(q){
+        q=q.trim().toLowerCase();
+        mapArea.querySelectorAll('.node').forEach(el=>{
+          const n=nodes.find(x=>x.id===el.dataset.id); const hay=(n.label+' '+n.cat+' '+n.role+' '+n.idea+' '+n.desc+' '+n.bullets.join(' ')).toLowerCase();
+          el.style.display=(!q||hay.includes(q))?'block':'none';
+        });
+        activeId=null; setTimeout(drawEdges,30);
+      }
+      function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
+      document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>setFilter(btn.dataset.filter)));
+      searchInput.addEventListener('input',e=>search(e.target.value));
+      document.getElementById('resetBtn').addEventListener('click',()=>{activeId=null;flowOn=false;searchInput.value='';document.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));mapArea.querySelectorAll('.node').forEach(el=>{el.style.display='block';el.classList.remove('active','dim')});drawEdges();detailTitle.textContent='Select a node';detailText.textContent='Choose any part of the map to understand how it connects to the modern monetary system.';detailBullets.innerHTML='';detailLink.style.display='none';roleText.textContent='System overview';connectedText.textContent='Central banks, banks, bond markets, investors, currencies, and the real economy.';ideaText.textContent='Money is not one object. It is a network of institutions, assets, promises, and trust.';});
+      document.getElementById('animateBtn').addEventListener('click',()=>{flowOn=!flowOn;document.getElementById('animateBtn').textContent=flowOn?'Stop flows':'Animate flows';drawEdges();});
+      document.getElementById('copyLinkBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(location.href);toast('Page link copied.')}catch(e){toast('Copy failed.')}});
+      window.addEventListener('resize',()=>{renderNodes(); if(activeId) selectNode(activeId);});
+      renderNodes(); selectNode('money-creation');
+    })();
+  </script>
+</body>
+</html>
