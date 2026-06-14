@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BondStats Monetary System Map™</title>
+  <meta name="description" content="An interactive BondStats map explaining how central banks, commercial banks, government bonds, currencies, inflation, capital flows and the real economy connect inside the modern monetary system." />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="BondStats Monetary System Map™" />
+  <meta property="og:description" content="A visual explanation of how money moves through the modern financial system." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#07111f" />
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg2: #0b1728;
+      --panel: rgba(11, 23, 40, 0.86);
+      --panel2: rgba(16, 29, 49, 0.94);
+      --text: #f5f0e6;
+      --muted: #a9b5c8;
+      --soft: #d7dee9;
+      --gold: #d6a84b;
+      --gold2: #f8d57d;
+      --blue: #3979c9;
+      --green: #60c38d;
+      --red: #e17364;
+      --line: rgba(248, 213, 125, 0.30);
+      --line2: rgba(95, 144, 209, 0.24);
+      --border: rgba(248, 213, 125, 0.18);
+      --shadow: 0 26px 80px rgba(0,0,0,0.42);
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    html[data-theme="light"] {
+      --bg: #f5efe2;
+      --bg2: #fff9ed;
+      --panel: rgba(255, 250, 241, 0.90);
+      --panel2: rgba(255, 255, 255, 0.95);
+      --text: #101a2b;
+      --muted: #536173;
+      --soft: #263246;
+      --gold: #a8731f;
+      --gold2: #c98b26;
+      --blue: #2868b1;
+      --green: #2f9361;
+      --red: #b95045;
+      --line: rgba(168, 115, 31, 0.32);
+      --line2: rgba(40, 104, 177, 0.18);
+      --border: rgba(168, 115, 31, 0.22);
+      --shadow: 0 22px 60px rgba(32, 43, 61, 0.16);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 8%, rgba(57,121,201,.24), transparent 30rem),
+        radial-gradient(circle at 82% 4%, rgba(214,168,75,.16), transparent 30rem),
+        radial-gradient(circle at 50% 45%, rgba(214,168,75,.08), transparent 36rem),
+        linear-gradient(180deg, var(--bg), #050914 75%, var(--bg));
+    }
+    html[data-theme="light"] body {
+      background:
+        radial-gradient(circle at 18% 8%, rgba(57,121,201,.14), transparent 30rem),
+        radial-gradient(circle at 82% 4%, rgba(214,168,75,.18), transparent 30rem),
+        radial-gradient(circle at 50% 45%, rgba(214,168,75,.08), transparent 36rem),
+        linear-gradient(180deg, var(--bg), #fff7e8 75%, var(--bg));
+    }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .skip-link { position:absolute; top:-5rem; left:1rem; background:var(--gold2); color:#111; padding:.7rem 1rem; border-radius:999px; z-index:50; }
+    .skip-link:focus { top:1rem; }
+    header {
+      position: sticky; top:0; z-index:40;
+      display:flex; align-items:center; justify-content:space-between; gap:1rem;
+      padding: 1rem clamp(1rem, 4vw, 3.5rem);
+      backdrop-filter: blur(18px);
+      background: rgba(7,17,31,.76);
+      border-bottom: 1px solid var(--border);
+    }
+    html[data-theme="light"] header { background: rgba(245,239,226,.82); }
+    .brand { display:flex; align-items:center; gap:.8rem; font-weight:850; letter-spacing:.02em; }
+    .brand-mark { width:2.35rem; height:2.35rem; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,var(--gold2),var(--gold)); color:#0a1220; box-shadow:0 0 28px rgba(214,168,75,.36); }
+    .top-nav { display:flex; gap:1.05rem; color:var(--muted); font-size:.94rem; }
+    .top-nav a { text-decoration:none; }
+    .top-nav a:hover { color:var(--gold2); }
+    .theme-toggle, .ghost, .chip, .map-action { border:1px solid var(--border); background:rgba(255,255,255,.04); color:var(--text); border-radius:999px; padding:.65rem .95rem; transition:.18s ease; }
+    html[data-theme="light"] .theme-toggle, html[data-theme="light"] .ghost, html[data-theme="light"] .chip, html[data-theme="light"] .map-action { background:rgba(255,255,255,.58); }
+    .theme-toggle:hover, .ghost:hover, .chip:hover, .map-action:hover { border-color:var(--gold2); transform:translateY(-1px); }
+    main { width:min(1440px, 100%); margin:0 auto; padding:0 clamp(1rem,3vw,3rem) 4rem; }
+    .hero { text-align:center; padding: clamp(4rem,9vw,7.8rem) 0 3rem; }
+    .eyebrow { display:inline-flex; align-items:center; gap:.55rem; padding:.45rem .8rem; border:1px solid var(--border); border-radius:999px; color:var(--gold2); background:rgba(214,168,75,.07); font-size:.85rem; }
+    h1 { margin:1.35rem auto .85rem; max-width:1050px; font-size:clamp(2.35rem,6.4vw,6.4rem); line-height:.94; letter-spacing:-.075em; }
+    .hero p { max-width:780px; margin:0 auto; color:var(--muted); font-size:clamp(1.05rem,1.5vw,1.35rem); line-height:1.65; }
+    .hero-actions { display:flex; justify-content:center; gap:.75rem; flex-wrap:wrap; margin-top:1.6rem; }
+    .primary { display:inline-flex; align-items:center; gap:.5rem; text-decoration:none; border-radius:999px; padding:.85rem 1.1rem; background:linear-gradient(135deg,var(--gold2),var(--gold)); color:#111827; font-weight:800; box-shadow:0 16px 44px rgba(214,168,75,.22); }
+    .section-head { display:flex; justify-content:space-between; align-items:end; gap:1rem; margin:3rem 0 1.1rem; }
+    h2 { margin:0; font-size:clamp(1.5rem,3vw,2.6rem); letter-spacing:-.045em; }
+    .section-head p { color:var(--muted); max-width:650px; margin:.35rem 0 0; line-height:1.55; }
+    .map-shell { position:relative; overflow:hidden; border:1px solid var(--border); border-radius:28px; background:linear-gradient(180deg, var(--panel), rgba(5,9,20,.86)); box-shadow: var(--shadow); }
+    html[data-theme="light"] .map-shell { background:linear-gradient(180deg, var(--panel), rgba(255,250,241,.92)); }
+    .map-toolbar { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem; border-bottom:1px solid var(--border); }
+    .search { flex:1; display:flex; align-items:center; gap:.6rem; border:1px solid var(--border); border-radius:999px; padding:.62rem .85rem; background:rgba(255,255,255,.04); max-width:520px; }
+    html[data-theme="light"] .search { background:rgba(255,255,255,.7); }
+    .search input { width:100%; border:0; outline:0; background:transparent; color:var(--text); }
+    .filters { display:flex; gap:.45rem; flex-wrap:wrap; }
+    .chip { font-size:.85rem; padding:.5rem .75rem; color:var(--muted); }
+    .chip.active { color:#111827; background:linear-gradient(135deg,var(--gold2),var(--gold)); border-color:transparent; }
+    .map-grid { display:grid; grid-template-columns: minmax(0, 1fr) 390px; min-height:720px; }
+    .canvas-wrap { position:relative; min-height:720px; overflow:auto; }
+    .system-canvas { position:relative; width:1060px; height:720px; transform-origin:0 0; }
+    .connections { position:absolute; inset:0; width:1060px; height:720px; pointer-events:none; }
+    .connections path { fill:none; stroke:var(--line); stroke-width:2.5; stroke-linecap:round; stroke-dasharray:8 9; animation: flow 26s linear infinite; }
+    .connections path.strong { stroke:rgba(248,213,125,.55); stroke-width:3.4; stroke-dasharray:none; }
+    .connections path.blue { stroke:var(--line2); stroke-dasharray:6 10; }
+    @keyframes flow { to { stroke-dashoffset: -420; } }
+    .node { position:absolute; width:178px; min-height:96px; border:1px solid var(--border); border-radius:22px; background:linear-gradient(180deg, var(--panel2), rgba(11,23,40,.78)); box-shadow:0 18px 48px rgba(0,0,0,.2); padding:1rem; display:flex; flex-direction:column; gap:.42rem; transition:.18s ease; overflow:hidden; }
+    html[data-theme="light"] .node { background:linear-gradient(180deg, var(--panel2), rgba(255,255,255,.72)); }
+    .node::before { content:""; position:absolute; inset:-1px; border-radius:inherit; background:radial-gradient(circle at 12% 8%, rgba(248,213,125,.22), transparent 45%); pointer-events:none; }
+    .node:hover, .node.active { transform:translateY(-4px); border-color:var(--gold2); box-shadow:0 24px 70px rgba(214,168,75,.14); }
+    .node.hidden { opacity:.16; filter:grayscale(.9); pointer-events:none; }
+    .node-icon { width:2.15rem; height:2.15rem; border-radius:50%; display:grid; place-items:center; background:rgba(214,168,75,.13); color:var(--gold2); font-weight:850; z-index:1; }
+    .node h3 { margin:0; font-size:1rem; line-height:1.18; z-index:1; }
+    .node p { margin:0; color:var(--muted); font-size:.78rem; line-height:1.35; z-index:1; }
+    .node.central { border-color:rgba(248,213,125,.38); }
+    .node.risk { border-color:rgba(225,115,100,.35); }
+    .node.real { border-color:rgba(96,195,141,.35); }
+    .details { border-left:1px solid var(--border); padding:1.3rem; background:rgba(0,0,0,.08); }
+    html[data-theme="light"] .details { background:rgba(255,255,255,.34); }
+    .details-card { position:sticky; top:96px; border:1px solid var(--border); border-radius:24px; background:var(--panel); padding:1.25rem; box-shadow:0 16px 48px rgba(0,0,0,.14); }
+    .details-card .tag { display:inline-flex; color:#111827; background:linear-gradient(135deg,var(--gold2),var(--gold)); border-radius:999px; padding:.35rem .6rem; font-size:.76rem; font-weight:800; }
+    .details h3 { margin:.9rem 0 .55rem; font-size:1.55rem; letter-spacing:-.035em; }
+    .details p { color:var(--muted); line-height:1.6; }
+    .details ul { padding-left:1.1rem; color:var(--soft); line-height:1.65; }
+    .link-list { display:grid; gap:.55rem; margin-top:1rem; }
+    .learn-link { display:flex; justify-content:space-between; gap:1rem; align-items:center; border:1px solid var(--border); border-radius:16px; padding:.75rem .85rem; text-decoration:none; color:var(--text); background:rgba(255,255,255,.035); }
+    html[data-theme="light"] .learn-link { background:rgba(255,255,255,.72); }
+    .learn-link:hover { border-color:var(--gold2); }
+    .learn-link span { color:var(--muted); font-size:.84rem; }
+    .legend { display:grid; grid-template-columns:repeat(4, 1fr); gap:.8rem; margin-top:1rem; }
+    .legend-item, .card { border:1px solid var(--border); border-radius:20px; background:var(--panel); padding:1rem; }
+    .legend-item strong { display:block; margin-bottom:.25rem; }
+    .legend-item p, .card p { margin:0; color:var(--muted); line-height:1.55; }
+    .cards { display:grid; grid-template-columns:repeat(3, 1fr); gap:1rem; }
+    .card h3 { margin:.2rem 0 .5rem; }
+    .card a { color:var(--gold2); text-decoration:none; }
+    footer { width:min(1440px,100%); margin:0 auto; padding:2rem clamp(1rem,3vw,3rem) 3rem; color:var(--muted); display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; border-top:1px solid var(--border); }
+    .footer-mark { color:var(--gold2); font-weight:800; }
+    .fixed-badge { position:fixed; right:1rem; bottom:1rem; z-index:30; border:1px solid var(--border); border-radius:999px; background:var(--panel); color:var(--muted); padding:.55rem .8rem; font-size:.76rem; backdrop-filter:blur(14px); }
+    .fixed-badge strong { color:var(--gold2); }
+    @media (max-width: 1060px) { .map-grid { grid-template-columns:1fr; } .details { border-left:0; border-top:1px solid var(--border); } .details-card { position:relative; top:0; } .legend, .cards { grid-template-columns:1fr 1fr; } .top-nav { display:none; } }
+    @media (max-width: 700px) { .hero { text-align:left; } .hero-actions { justify-content:flex-start; } .map-toolbar { flex-direction:column; align-items:stretch; } .legend, .cards { grid-template-columns:1fr; } .system-canvas { transform:scale(.74); transform-origin:0 0; height:720px; } .canvas-wrap { min-height:540px; } .fixed-badge { left:1rem; right:auto; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#map">Skip to map</a>
+  <header>
+    <div class="brand"><div class="brand-mark">B</div><div>BondStats</div></div>
+    <nav class="top-nav" aria-label="Main navigation">
+      <a href="#map">Map</a><a href="#how">How it works</a><a href="#learn">Learn pages</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light mode">Light mode</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">BondStats Monetary System Map™ · v1.0</div>
+      <h1>A visual map of the entire monetary system.</h1>
+      <p>Follow how central banks, commercial banks, government bonds, currencies, investors and the real economy connect inside the modern financial system.</p>
+      <div class="hero-actions"><a class="primary" href="#map">Explore the map →</a><a class="ghost" href="#learn">Open related Learn pages</a></div>
+    </section>
+
+    <section id="map">
+      <div class="section-head"><div><h2>The system map</h2><p>Click a node to see its role, the channels connected to it, and the most relevant BondStats education pages.</p></div></div>
+      <div class="map-shell">
+        <div class="map-toolbar">
+          <label class="search" for="searchInput"><span>⌕</span><input id="searchInput" autocomplete="off" placeholder="Search central banks, bonds, inflation, currencies…" /></label>
+          <div class="filters" aria-label="Map filters">
+            <button class="chip active" data-filter="all" type="button">All</button>
+            <button class="chip" data-filter="money" type="button">Money</button>
+            <button class="chip" data-filter="bonds" type="button">Bonds</button>
+            <button class="chip" data-filter="global" type="button">Global</button>
+            <button class="chip" data-filter="risk" type="button">Risk</button>
+          </div>
+        </div>
+        <div class="map-grid">
+          <div class="canvas-wrap" aria-label="Interactive monetary system map">
+            <div class="system-canvas" id="canvas">
+              <svg class="connections" viewBox="0 0 1060 720" aria-hidden="true">
+                <path class="strong" d="M530 88 C530 145 530 172 530 228" />
+                <path class="strong" d="M530 324 C530 370 530 404 530 462" />
+                <path class="strong" d="M530 558 C530 594 530 620 530 650" />
+                <path d="M410 280 C325 285 268 306 214 363" />
+                <path d="M650 280 C742 284 802 310 844 369" />
+                <path d="M410 515 C330 522 272 548 224 608" />
+                <path d="M650 515 C743 522 804 548 850 612" />
+                <path class="blue" d="M214 363 C285 466 371 505 530 510" />
+                <path class="blue" d="M844 369 C765 466 679 505 530 510" />
+                <path d="M530 228 C410 170 284 156 164 193" />
+                <path d="M530 228 C650 170 776 156 896 193" />
+                <path class="blue" d="M896 193 C927 302 918 420 850 612" />
+                <path class="blue" d="M164 193 C125 307 138 445 224 608" />
+              </svg>
+              <button class="node central" style="left:441px; top:38px" data-id="central-banks"><div class="node-icon">CB</div><h3>Central Banks</h3><p>Rates, reserves, liquidity, QE and QT.</p></button>
+              <button class="node" style="left:441px; top:198px" data-id="commercial-banks"><div class="node-icon">BK</div><h3>Commercial Banks</h3><p>Deposits, lending and money creation.</p></button>
+              <button class="node" style="left:441px; top:438px" data-id="government-bonds"><div class="node-icon">GB</div><h3>Government Bonds</h3><p>Debt issuance, yields and reserve assets.</p></button>
+              <button class="node real" style="left:441px; top:626px" data-id="real-economy"><div class="node-icon">RE</div><h3>Real Economy</h3><p>Businesses, consumers, jobs and prices.</p></button>
+              <button class="node" style="left:74px; top:154px" data-id="money-creation"><div class="node-icon">MC</div><h3>Money Creation</h3><p>New deposits emerge through credit.</p></button>
+              <button class="node" style="left:808px; top:154px" data-id="interest-rates"><div class="node-icon">%</div><h3>Interest Rates</h3><p>The price of money across time.</p></button>
+              <button class="node" style="left:124px; top:330px" data-id="inflation"><div class="node-icon">π</div><h3>Inflation</h3><p>Purchasing power and price stability.</p></button>
+              <button class="node" style="left:758px; top:330px" data-id="currencies"><div class="node-icon">FX</div><h3>Currencies</h3><p>Exchange rates, reserves and trust.</p></button>
+              <button class="node" style="left:122px; top:584px" data-id="investors"><div class="node-icon">IM</div><h3>Investors</h3><p>Pensions, insurers, asset managers.</p></button>
+              <button class="node" style="left:760px; top:584px" data-id="global-flows"><div class="node-icon">GF</div><h3>Global Capital Flows</h3><p>Money moves across borders.</p></button>
+              <button class="node risk" style="left:441px; top:318px" data-id="financial-crises"><div class="node-icon">!</div><h3>Financial Stress</h3><p>Liquidity, confidence and crisis channels.</p></button>
+              <button class="node" style="left:441px; top:79px; transform:translateX(240px)" data-id="dollar-system"><div class="node-icon">$</div><h3>Dollar System</h3><p>Reserve currency, Treasuries and global trade.</p></button>
+            </div>
+          </div>
+          <aside class="details" aria-live="polite">
+            <div class="details-card" id="detailsCard"></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="section-head"><div><h2>How to read the map</h2><p>The map is not a trading dashboard. It is a conceptual architecture of the monetary system.</p></div></div>
+      <div class="legend">
+        <div class="legend-item"><strong>Gold lines</strong><p>Core monetary transmission channels.</p></div>
+        <div class="legend-item"><strong>Blue lines</strong><p>Market feedback loops and global connections.</p></div>
+        <div class="legend-item"><strong>Risk nodes</strong><p>Where confidence can break down.</p></div>
+        <div class="legend-item"><strong>Learn links</strong><p>Each node connects to BondStats education pages.</p></div>
+      </div>
+    </section>
+
+    <section id="learn">
+      <div class="section-head"><div><h2>Related BondStats Learn pages</h2><p>These pages are connected directly inside the map and help readers move from visual understanding to deeper education.</p></div></div>
+      <div class="cards" id="learnCards"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div><span class="footer-mark">BondStats Monetary System Map™</span><br>© 2026 BondStats. All rights reserved.</div>
+    <div>Created and maintained by BondStats™ · Educational use only</div>
+  </footer>
+  <div class="fixed-badge"><strong>BondStats™</strong> Monetary Map v1.0</div>
+
+  <script>
+    'use strict';
+    const BASE = 'https://www.bondstats.org';
+    const pages = {
+      whatMoney: { title:'What Is Money?', url: BASE + '/learn/what-is-money/what-is-money' },
+      fiat: { title:'Fiat Currency Explained', url: BASE + '/learn/what-is-money/fiat-currency-explained' },
+      moneyCreation: { title:'How Money Is Created', url: BASE + '/learn/what-is-money/how-money-is-created' },
+      fractional: { title:'Fractional Reserve Banking', url: BASE + '/learn/what-is-money/fractional-reserve-banking' },
+      inflation: { title:'Inflation Explained', url: BASE + '/learn/what-is-money/inflation-explained' },
+      deflation: { title:'Deflation Explained', url: BASE + '/learn/what-is-money/deflation-explained' },
+      fx: { title:'Why Currencies Rise and Fall', url: BASE + '/learn/what-is-money/why-currencies-rise-and-fall' },
+      reserve: { title:'Reserve Currencies', url: BASE + '/learn/what-is-money/reserve-currencies' },
+      petrodollar: { title:'What Is the Petrodollar?', url: BASE + '/learn/what-is-money/what-is-the-petrodollar' },
+      qe: { title:'What Is Quantitative Easing?', url: BASE + '/learn/what-is-money/what-is-quantitative-easing' },
+      monetarySystem: { title:'What Is a Monetary System?', url: BASE + '/learn/what-is-money/what-is-a-monetary-system' },
+      goldStandard: { title:'What Is the Gold Standard?', url: BASE + '/learn/what-is-money/what-is-the-gold-standard' },
+      currencyCrisis: { title:'What Is a Currency Crisis?', url: BASE + '/learn/what-is-money/what-is-a-currency-crisis' },
+      bondFundamentals: { title:'Bond Market Fundamentals', url: BASE + '/learn/bond-basics/bond-market-fundamentals' },
+      whoHolds: { title:'Who Holds Government Bonds?', url: BASE + '/learn/bond-basics/who-holds-government-bonds' },
+      whoOwns: { title:'Who Owns the Bond Market', url: BASE + '/learn/bond-basics/who-owns-the-bond-market' },
+      yields: { title:'What Moves Bond Yields', url: BASE + '/education/what-moves-bond-yields' },
+      centralBanks: { title:'Central Banks and Bond Yields', url: BASE + '/central-banks/central-banks-and-bond-yields' },
+      usaFinance: { title:'Who Finances the United States?', url: BASE + '/learn/insights/who-finances-the-united-states' },
+      geopoliticsDebt: { title:'The Geopolitics of Sovereign Debt', url: BASE + '/learn/insights/the-geopolitics-of-sovereign-debt' },
+      dailyEuro: { title:'Daily Euro Bond Yield', url: BASE + '/markets/daily-euro-bond-yield' },
+      globalFlows: { title:'Switzerland and Global Capital Flows', url: BASE + '/learn/switzerland/switzerland-and-global-capital-flows' }
+    };
+    const data = {
+      'central-banks': { tag:'Policy core', title:'Central Banks', category:'money', summary:'Central banks influence the monetary system through policy rates, reserves, liquidity operations, asset purchases and financial stability tools.', bullets:['Set short-term interest rates','Provide reserves and liquidity','Influence bond yields through QE and QT','Act as lenders of last resort'], links:[pages.centralBanks,pages.qe,pages.inflation,pages.monetarySystem] },
+      'commercial-banks': { tag:'Credit engine', title:'Commercial Banks', category:'money', summary:'Commercial banks connect savings, credit and payments. In modern economies, much of the money supply is created through bank lending.', bullets:['Accept deposits and provide loans','Create deposits when loans are issued','Transmit monetary policy to households and firms','Depend on confidence and liquidity'], links:[pages.moneyCreation,pages.fractional,pages.whatMoney,pages.fiat] },
+      'money-creation': { tag:'Money supply', title:'Money Creation', category:'money', summary:'Money creation is the process through which new money enters the financial system, primarily through credit creation by commercial banks.', bullets:['Loans create new bank deposits','Central banks shape the conditions for credit','Credit expansion can support growth','Excess credit can increase financial risk'], links:[pages.moneyCreation,pages.fractional,pages.fiat,pages.inflation] },
+      'interest-rates': { tag:'Price of money', title:'Interest Rates', category:'bonds', summary:'Interest rates connect central bank policy, borrowing costs, asset prices, currencies and the bond market.', bullets:['Higher rates increase borrowing costs','Lower rates can stimulate lending','Rate expectations influence yield curves','Interest differentials affect currencies'], links:[pages.centralBanks,pages.yields,pages.bondFundamentals,pages.fx] },
+      'government-bonds': { tag:'Reserve asset', title:'Government Bonds', category:'bonds', summary:'Government bonds finance public borrowing and serve as core assets for banks, investors, central banks and reserve managers.', bullets:['Finance government deficits','Anchor yield curves','Serve as collateral in financial markets','Act as safe assets during stress'], links:[pages.bondFundamentals,pages.whoHolds,pages.whoOwns,pages.usaFinance] },
+      'investors': { tag:'Capital allocators', title:'Institutional Investors', category:'bonds', summary:'Pension funds, insurers, asset managers and foreign central banks allocate capital across bonds, equities, currencies and real assets.', bullets:['Hold large portfolios of government bonds','Move capital across countries and asset classes','Respond to yields, inflation and risk','Influence liquidity and market depth'], links:[pages.whoOwns,pages.whoHolds,pages.geopoliticsDebt,pages.globalFlows] },
+      'inflation': { tag:'Purchasing power', title:'Inflation & Deflation', category:'money', summary:'Inflation and deflation describe changes in the purchasing power of money and directly influence central bank policy, bond yields and real economic decisions.', bullets:['Inflation reduces purchasing power','Deflation increases the real burden of debt','Central banks target price stability','Bond markets react to inflation expectations'], links:[pages.inflation,pages.deflation,pages.qe,pages.yields] },
+      'currencies': { tag:'Exchange value', title:'Currencies', category:'global', summary:'Currencies rise and fall based on confidence, interest rates, inflation, capital flows, trade and central bank credibility.', bullets:['Exchange rates link national economies','Reserve currencies support global trade','Currency weakness can trigger inflation','Confidence is central to monetary stability'], links:[pages.fx,pages.reserve,pages.currencyCrisis,pages.fiat] },
+      'dollar-system': { tag:'Global anchor', title:'The Dollar System', category:'global', summary:'The U.S. Dollar sits at the center of global trade, reserve management, dollar funding, commodity markets and the Treasury market.', bullets:['Dominant reserve currency','Deep Treasury market behind it','Oil and commodities often priced in dollars','Dollar liquidity influences global finance'], links:[pages.reserve,pages.petrodollar,pages.usaFinance,pages.geopoliticsDebt] },
+      'global-flows': { tag:'Cross-border money', title:'Global Capital Flows', category:'global', summary:'Capital flows transmit financial conditions across borders through currencies, bonds, banks, trade, reserves and investor portfolios.', bullets:['Capital seeks return and safety','Flows affect exchange rates and bond yields','Reserve managers allocate across currencies','Stress can reverse capital flows quickly'], links:[pages.globalFlows,pages.reserve,pages.currencyCrisis,pages.dailyEuro] },
+      'financial-crises': { tag:'Stress channel', title:'Financial Stress', category:'risk', summary:'Financial stress emerges when liquidity, confidence or solvency deteriorates. It often travels through banks, bond markets, currencies and credit conditions.', bullets:['Liquidity can disappear quickly','Currency weakness can become self-reinforcing','Bond spreads reflect perceived risk','Policy responses attempt to restore confidence'], links:[pages.currencyCrisis,pages.geopoliticsDebt,pages.yields,pages.inflation] },
+      'real-economy': { tag:'End point', title:'Real Economy', category:'money', summary:'The monetary system ultimately affects households, businesses, employment, consumption, investment and prices.', bullets:['Credit availability shapes investment','Interest rates influence consumption','Inflation affects living standards','Government borrowing funds public spending'], links:[pages.whatMoney,pages.inflation,pages.deflation,pages.bondFundamentals] }
+    };
+    const nodes = Array.from(document.querySelectorAll('.node'));
+    const details = document.getElementById('detailsCard');
+    const searchInput = document.getElementById('searchInput');
+    const chips = Array.from(document.querySelectorAll('.chip'));
+    const themeToggle = document.getElementById('themeToggle');
+    const learnCards = document.getElementById('learnCards');
+    let activeFilter = 'all';
+
+    function renderDetails(id) {
+      const item = data[id] || data['central-banks'];
+      nodes.forEach(n => n.classList.toggle('active', n.dataset.id === id));
+      details.innerHTML = `
+        <span class="tag">${item.tag}</span>
+        <h3>${item.title}</h3>
+        <p>${item.summary}</p>
+        <ul>${item.bullets.map(b => `<li>${b}</li>`).join('')}</ul>
+        <div class="link-list">
+          ${item.links.map(link => `<a class="learn-link" href="${link.url}" target="_blank" rel="noopener"><strong>${link.title}</strong><span>Open →</span></a>`).join('')}
+        </div>`;
+    }
+    function filterNodes() {
+      const q = searchInput.value.trim().toLowerCase();
+      nodes.forEach(node => {
+        const id = node.dataset.id;
+        const item = data[id];
+        const text = (node.textContent + ' ' + item.summary + ' ' + item.bullets.join(' ')).toLowerCase();
+        const filterOK = activeFilter === 'all' || item.category === activeFilter;
+        const searchOK = !q || text.includes(q);
+        node.classList.toggle('hidden', !(filterOK && searchOK));
+      });
+    }
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('bondstats-theme', theme);
+      themeToggle.textContent = theme === 'light' ? 'Dark mode' : 'Light mode';
+      themeToggle.setAttribute('aria-label', theme === 'light' ? 'Toggle dark mode' : 'Toggle light mode');
+    }
+    function renderLearnCards() {
+      const unique = [pages.whatMoney,pages.fiat,pages.moneyCreation,pages.fractional,pages.inflation,pages.deflation,pages.fx,pages.reserve,pages.petrodollar,pages.qe,pages.monetarySystem,pages.goldStandard,pages.currencyCrisis,pages.bondFundamentals,pages.whoHolds,pages.whoOwns,pages.centralBanks,pages.usaFinance];
+      learnCards.innerHTML = unique.map(page => `<article class="card"><h3>${page.title}</h3><p>Connected to the BondStats Monetary System Map.</p><p style="margin-top:.7rem"><a href="${page.url}" target="_blank" rel="noopener">Open page →</a></p></article>`).join('');
+    }
+    nodes.forEach(node => node.addEventListener('click', () => renderDetails(node.dataset.id)));
+    chips.forEach(chip => chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeFilter = chip.dataset.filter;
+      filterNodes();
+    }));
+    searchInput.addEventListener('input', filterNodes);
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    });
+    setTheme(localStorage.getItem('bondstats-theme') || 'dark');
+    renderDetails('central-banks');
+    renderLearnCards();
+  </script>
+</body>
+</html>
