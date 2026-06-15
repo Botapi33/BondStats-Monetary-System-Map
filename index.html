@@ -1,0 +1,908 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BondStats Monetary System Map™</title>
+  <meta name="description" content="An interactive visual map explaining how central banks, commercial banks, bonds, currencies, inflation, capital flows, and the real economy connect inside the modern monetary system." />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="BondStats Monetary System Map™" />
+  <meta property="og:description" content="A visual explanation of how money moves through the modern financial system." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#07111f" />
+  <style>
+:root {
+  --bg: #07111f;
+  --bg-soft: #0b1728;
+  --panel: rgba(11, 23, 40, 0.88);
+  --panel-strong: #101d31;
+  --text: #f4f1e8;
+  --muted: #a7b1c2;
+  --gold: #d6a84b;
+  --gold-bright: #f7d37a;
+  --blue: #2f7dd1;
+  --red: #e46f61;
+  --green: #5cc58a;
+  --line: rgba(247, 211, 122, 0.28);
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+  --radius: 24px;
+  --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+[data-theme="light"] {
+  --bg: #f5f1e8;
+  --bg-soft: #fffaf0;
+  --panel: rgba(255, 250, 240, 0.92);
+  --panel-strong: #ffffff;
+  --text: #0d1726;
+  --muted: #526173;
+  --line: rgba(154, 111, 34, 0.28);
+  --shadow: 0 22px 60px rgba(29, 44, 65, 0.16);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  background:
+    radial-gradient(circle at 20% 10%, rgba(47, 125, 209, 0.2), transparent 28rem),
+    radial-gradient(circle at 80% 5%, rgba(214, 168, 75, 0.14), transparent 26rem),
+    linear-gradient(180deg, var(--bg), #050914 72%, var(--bg));
+  color: var(--text);
+  min-height: 100vh;
+}
+
+body[data-theme="light"] {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(47, 125, 209, 0.13), transparent 28rem),
+    radial-gradient(circle at 80% 5%, rgba(214, 168, 75, 0.14), transparent 26rem),
+    linear-gradient(180deg, var(--bg), #fff8e8 72%, var(--bg));
+}
+
+a { color: inherit; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -5rem;
+  background: var(--gold);
+  color: #111;
+  padding: .7rem 1rem;
+  border-radius: 999px;
+  z-index: 10;
+}
+.skip-link:focus { top: 1rem; }
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem clamp(1rem, 4vw, 3.5rem);
+  backdrop-filter: blur(18px);
+  background: rgba(7, 17, 31, 0.72);
+  border-bottom: 1px solid rgba(247, 211, 122, 0.12);
+}
+[data-theme="light"] .site-header { background: rgba(245, 241, 232, 0.78); }
+.brand { display: flex; align-items: center; gap: .75rem; font-weight: 800; letter-spacing: .02em; }
+.brand-mark {
+  width: 2.35rem;
+  height: 2.35rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #0a1220;
+  background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+  box-shadow: 0 0 28px rgba(214, 168, 75, 0.35);
+}
+.top-nav { display: flex; gap: 1rem; color: var(--muted); font-size: .95rem; }
+.top-nav a { text-decoration: none; }
+.top-nav a:hover { color: var(--gold-bright); }
+.theme-toggle, .toolbar-actions button, .secondary-button, .filter-chip {
+  border: 1px solid rgba(247, 211, 122, 0.22);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: 999px;
+  padding: .65rem .95rem;
+}
+.theme-toggle:hover, .toolbar-actions button:hover, .secondary-button:hover, .filter-chip:hover {
+  border-color: var(--gold-bright);
+}
+
+main { width: min(1440px, 100%); margin: 0 auto; padding: 0 clamp(1rem, 3vw, 3rem) 4rem; }
+.hero {
+  text-align: center;
+  padding: clamp(4rem, 9vw, 8rem) 0 3rem;
+}
+.eyebrow {
+  color: var(--gold-bright);
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  font-size: .78rem;
+  font-weight: 800;
+  margin: 0 0 1rem;
+}
+h1 { font-size: clamp(2.45rem, 7vw, 6.8rem); line-height: .95; margin: 0 auto 1.25rem; max-width: 1050px; letter-spacing: -.06em; }
+.hero-copy { max-width: 790px; margin: 0 auto; color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.6; }
+.hero-actions { display: flex; justify-content: center; gap: .8rem; flex-wrap: wrap; margin-top: 2rem; }
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: .9rem 1.25rem;
+  background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+  color: #101010;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 16px 42px rgba(214, 168, 75, 0.22);
+}
+
+.controls-panel, .map-shell, .modules, .how-to-use {
+  background: var(--panel);
+  border: 1px solid rgba(247, 211, 122, 0.14);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.controls-panel {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.search-wrap { flex: 1 1 340px; }
+.search-wrap label { display: block; margin-bottom: .45rem; color: var(--muted); font-size: .85rem; }
+.search-wrap input {
+  width: 100%;
+  border: 1px solid rgba(247, 211, 122, 0.2);
+  background: rgba(0, 0, 0, 0.16);
+  color: var(--text);
+  border-radius: 16px;
+  padding: .9rem 1rem;
+  outline: none;
+}
+.search-wrap input:focus { border-color: var(--gold-bright); box-shadow: 0 0 0 4px rgba(214, 168, 75, 0.12); }
+.filter-wrap { display: flex; gap: .55rem; flex-wrap: wrap; }
+.filter-chip.active { background: rgba(214, 168, 75, 0.2); border-color: var(--gold-bright); }
+
+.map-shell { overflow: hidden; margin-bottom: 1rem; }
+.map-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem 1.25rem 0; }
+.map-toolbar h2, .section-heading h2 { margin: 0; font-size: clamp(1.4rem, 3vw, 2.3rem); letter-spacing: -.03em; }
+.map-toolbar p { margin: .35rem 0 0; color: var(--muted); }
+.toolbar-actions { display: flex; gap: .6rem; }
+.map-stage {
+  position: relative;
+  height: clamp(540px, 67vw, 820px);
+  min-height: 580px;
+  overflow: hidden;
+  margin: 1rem;
+  border-radius: calc(var(--radius) - 6px);
+  background:
+    linear-gradient(rgba(247, 211, 122, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(247, 211, 122, 0.045) 1px, transparent 1px),
+    radial-gradient(circle at center, rgba(47, 125, 209, 0.18), transparent 35rem),
+    rgba(0, 0, 0, 0.16);
+  background-size: 42px 42px, 42px 42px, auto, auto;
+}
+.connection-layer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.flow-line {
+  fill: none;
+  stroke: url(#goldLine);
+  stroke-width: 3.3;
+  stroke-linecap: round;
+  opacity: .7;
+  marker-end: url(#arrow);
+  transition: opacity .2s, stroke-width .2s;
+}
+.secondary-flow { opacity: .42; stroke-width: 2.4; }
+.risk-flow { stroke: var(--red); opacity: .55; }
+.flow-line.active { opacity: 1; stroke-width: 5; filter: drop-shadow(0 0 10px rgba(247, 211, 122, .55)); }
+.flow-line.dim { opacity: .08; }
+.map-stage.animate .flow-line {
+  stroke-dasharray: 11 12;
+  animation: dash 1.25s linear infinite;
+}
+@keyframes dash { to { stroke-dashoffset: -46; } }
+
+.map-node {
+  --node-color: var(--gold);
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: translate(-50%, -50%);
+  width: 170px;
+  min-height: 108px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: .25rem;
+  text-align: left;
+  border: 1px solid rgba(247, 211, 122, 0.2);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.025));
+  color: var(--text);
+  border-radius: 22px;
+  padding: 1rem;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+  transition: transform .18s ease, border-color .18s ease, opacity .18s ease, filter .18s ease;
+  backdrop-filter: blur(10px);
+}
+.map-node:hover, .map-node:focus-visible { transform: translate(-50%, -50%) translateY(-4px) scale(1.02); border-color: var(--gold-bright); outline: none; }
+.map-node.active { border-color: var(--gold-bright); box-shadow: 0 0 0 4px rgba(214, 168, 75, 0.12), 0 22px 52px rgba(0,0,0,.35); }
+.map-node.dim { opacity: .25; filter: saturate(.5); }
+.node-icon {
+  display: grid;
+  place-items: center;
+  width: 2.45rem;
+  height: 2.45rem;
+  border-radius: 14px;
+  color: #101010;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--gold-bright), var(--node-color));
+}
+.node-title { font-weight: 850; line-height: 1.1; }
+.node-subtitle { color: var(--muted); font-size: .78rem; }
+.compact { width: 145px; min-height: 82px; }
+.compact .node-subtitle { display: none; }
+.node-policy { --node-color: #6aa8f5; }
+.node-global { --node-color: #d6a84b; }
+.node-risk { --node-color: #e46f61; }
+
+.detail-panel {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 30;
+  width: min(430px, calc(100vw - 2rem));
+  background: var(--panel-strong);
+  border: 1px solid rgba(247, 211, 122, 0.22);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  padding: 1.35rem;
+  transform: translateY(140%);
+  transition: transform .25s ease;
+}
+.detail-panel.open { transform: translateY(0); }
+.detail-close {
+  position: absolute;
+  right: .8rem;
+  top: .75rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  border: 1px solid rgba(247, 211, 122, .2);
+  background: transparent;
+  color: var(--text);
+  font-size: 1.25rem;
+}
+.detail-kicker { color: var(--gold-bright); margin: 0 0 .55rem; text-transform: uppercase; font-size: .72rem; letter-spacing: .14em; font-weight: 900; }
+.detail-panel h2 { margin: 0 2.5rem .7rem 0; font-size: 1.75rem; }
+.detail-panel p { color: var(--muted); line-height: 1.65; }
+.detail-meta { display: flex; gap: .5rem; flex-wrap: wrap; margin: 1rem 0; }
+.detail-meta span { border: 1px solid rgba(247, 211, 122, .2); border-radius: 999px; padding: .45rem .7rem; color: var(--muted); font-size: .82rem; }
+.detail-link { display: inline-flex; text-decoration: none; color: #101010; background: linear-gradient(135deg, var(--gold-bright), var(--gold)); padding: .72rem .9rem; border-radius: 999px; font-weight: 850; }
+
+.modules, .how-to-use { padding: clamp(1.1rem, 3vw, 2rem); margin-top: 1rem; }
+.section-heading { margin-bottom: 1.25rem; }
+.module-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.module-card, .steps article {
+  background: rgba(255,255,255,.045);
+  border: 1px solid rgba(247, 211, 122, 0.12);
+  border-radius: 20px;
+  padding: 1rem;
+}
+.module-card h3 { margin: 0 0 .45rem; }
+.module-card p, .steps p { color: var(--muted); line-height: 1.55; }
+.module-card a { color: var(--gold-bright); text-decoration: none; font-weight: 800; }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.steps span { color: var(--gold-bright); font-weight: 900; }
+.steps h3 { margin: .5rem 0; }
+.site-footer { color: var(--muted); display: flex; justify-content: space-between; gap: 1rem; padding: 2rem clamp(1rem, 4vw, 3.5rem); border-top: 1px solid rgba(247, 211, 122, 0.10); }
+
+.hidden-by-search, .hidden-by-filter { display: none !important; }
+
+@media (max-width: 980px) {
+  .top-nav { display: none; }
+  .controls-panel { align-items: stretch; flex-direction: column; }
+  .map-toolbar { align-items: flex-start; flex-direction: column; }
+  .module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .steps { grid-template-columns: 1fr; }
+  .map-stage { min-height: 760px; }
+  .map-node { width: 145px; min-height: 90px; font-size: .88rem; }
+  .compact { width: 130px; }
+}
+
+@media (max-width: 620px) {
+  .brand-text { display: none; }
+  .hero { padding-top: 3rem; }
+  .map-stage { height: 980px; min-height: 980px; }
+  .connection-layer { display: none; }
+  .map-node { position: static; transform: none; width: 100%; margin-bottom: .7rem; }
+  .map-node:hover, .map-node:focus-visible { transform: translateY(-2px); }
+  .map-stage { padding: 1rem; display: block; overflow: auto; }
+  .module-grid { grid-template-columns: 1fr; }
+  .site-footer { flex-direction: column; }
+}
+
+
+/* BondStats single-file light-mode hardening: layout unchanged */
+body[data-theme="light"] {
+  --bg: #f5f1e8;
+  --bg-soft: #fffaf0;
+  --panel: rgba(255, 250, 240, 0.94);
+  --panel-strong: #ffffff;
+  --text: #0d1726;
+  --muted: #536174;
+  --line: rgba(154, 111, 34, 0.28);
+  --shadow: 0 22px 60px rgba(29, 44, 65, 0.16);
+  color: var(--text);
+}
+body[data-theme="light"] .site-header,
+body[data-theme="light"] .controls-panel,
+body[data-theme="light"] .map-shell,
+body[data-theme="light"] .modules,
+body[data-theme="light"] .how-to-use,
+body[data-theme="light"] .detail-panel {
+  background: rgba(255, 250, 240, 0.94);
+  color: var(--text);
+  border-color: rgba(154, 111, 34, 0.20);
+}
+body[data-theme="light"] .map-stage {
+  background:
+    linear-gradient(rgba(154,111,34,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(154,111,34,0.06) 1px, transparent 1px),
+    radial-gradient(circle at center, rgba(47,125,209,0.13), transparent 35rem),
+    rgba(255,255,255,0.54);
+  background-size: 42px 42px, 42px 42px, auto, auto;
+}
+body[data-theme="light"] .map-node {
+  background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(239,246,255,0.80));
+  color: #0d1726;
+  border-color: rgba(154,111,34,0.28);
+  box-shadow: 0 14px 34px rgba(29,44,65,0.15);
+}
+body[data-theme="light"] .node-subtitle,
+body[data-theme="light"] .hero-copy,
+body[data-theme="light"] .map-toolbar p,
+body[data-theme="light"] .module-card p,
+body[data-theme="light"] .steps p,
+body[data-theme="light"] .detail-panel p,
+body[data-theme="light"] .site-footer,
+body[data-theme="light"] .search-wrap label,
+body[data-theme="light"] .top-nav {
+  color: var(--muted);
+}
+body[data-theme="light"] input,
+body[data-theme="light"] .theme-toggle,
+body[data-theme="light"] .toolbar-actions button,
+body[data-theme="light"] .secondary-button,
+body[data-theme="light"] .filter-chip {
+  background: rgba(255,255,255,0.72);
+  color: #0d1726;
+  border-color: rgba(154,111,34,0.25);
+}
+body[data-theme="light"] .filter-chip.active {
+  background: rgba(214,168,75,0.24);
+  border-color: var(--gold);
+}
+body[data-theme="light"] .module-card,
+body[data-theme="light"] .steps article {
+  background: rgba(255,255,255,0.72);
+  border-color: rgba(154,111,34,0.18);
+}
+
+  
+
+/* FULL MAP + VISIBLE SIDE PANEL FIX
+   The map keeps its full width. The selected layer panel is anchored inside the map section,
+   not over the hero and not below the map. */
+.map-content-grid{
+  position:relative;
+  display:block;
+  padding:0 1rem 1rem;
+}
+.map-content-grid .map-stage{
+  margin:1rem 0 0;
+  width:100%;
+  min-width:0;
+}
+.map-content-grid .detail-panel{
+  position:absolute !important;
+  top:1.25rem !important;
+  right:1.25rem !important;
+  bottom:auto !important;
+  width:min(380px, calc(100% - 2.5rem)) !important;
+  max-width:380px !important;
+  max-height:calc(100% - 2.5rem) !important;
+  transform:none !important;
+  opacity:1 !important;
+  z-index:8 !important;
+  margin:0 !important;
+  overflow:auto;
+}
+.map-content-grid .detail-panel:not(.open){
+  opacity:.92 !important;
+  transform:none !important;
+}
+.map-content-grid .detail-close{
+  display:block !important;
+}
+@media (max-width: 1040px){
+  .map-content-grid .detail-panel{
+    position:static !important;
+    width:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    margin:1rem 0 0 !important;
+  }
+}
+@media (max-width:620px){
+  .map-content-grid{ padding:0 .8rem .8rem; }
+}
+
+</style>
+</head>
+<body>
+  <a class="skip-link" href="#map">Skip to map</a>
+
+  <header class="site-header">
+    <a class="brand" href="https://www.bondstats.org" target="_blank" rel="noopener" aria-label="Open BondStats">
+      <span class="brand-mark">B</span>
+      <span class="brand-text">BondStats</span>
+    </a>
+    <nav class="top-nav" aria-label="Main navigation">
+      <a href="#map">Map</a>
+      <a href="#modules">Modules</a>
+      <a href="#how-to-use">How to use</a>
+    </nav>
+    <button class="theme-toggle" type="button">Light mode</button>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">BondStats Visual System</p>
+      <h1 id="page-title">Monetary System Map™</h1>
+      <p class="hero-copy">An interactive map showing how central banks, commercial banks, government bonds, investors, currencies, inflation, and the real economy connect inside the modern financial system.</p>
+      <div class="hero-actions">
+        <a class="primary-button" href="#map">Explore the map</a>
+        <a class="secondary-button" href="https://www.bondstats.org" target="_blank" rel="noopener">Visit BondStats</a>
+      </div>
+    </section>
+
+    <section class="controls-panel" aria-label="Map controls">
+      <div class="search-wrap">
+        <label for="searchInput">Search the system</label>
+        <input id="searchInput" type="search" placeholder="Try: inflation, bonds, dollar, QE, crisis..." autocomplete="off" />
+      </div>
+      <div class="filter-wrap" aria-label="Filter nodes">
+        <button class="filter-chip active" type="button" data-filter="all">All</button>
+        <button class="filter-chip" type="button" data-filter="core">Core</button>
+        <button class="filter-chip" type="button" data-filter="policy">Policy</button>
+        <button class="filter-chip" type="button" data-filter="global">Global</button>
+        <button class="filter-chip" type="button" data-filter="risk">Risk</button>
+      </div>
+    </section>
+
+    <section class="map-shell" id="map" aria-labelledby="map-title">
+      <div class="map-toolbar">
+        <div>
+          <h2 id="map-title">How money moves through the system</h2>
+          <p>Click a node to reveal its role, highlight connections, and open the related BondStats guide.</p>
+        </div>
+        <div class="toolbar-actions">
+          <button id="animateFlows" type="button">Animate flows</button>
+          <button id="resetMapTop" type="button">Reset</button>
+        </div>
+      </div>
+
+      <div class="map-content-grid">
+      <div class="map-stage" id="mapStage" role="application" aria-label="Interactive monetary system map">
+        <svg class="connection-layer" viewBox="0 0 1200 760" aria-hidden="true" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="goldLine" x1="0%" x2="100%" y1="0%" y2="0%">
+              <stop offset="0%" stop-color="#f7d37a" stop-opacity="0.35" />
+              <stop offset="50%" stop-color="#d6a84b" stop-opacity="1" />
+              <stop offset="100%" stop-color="#f7d37a" stop-opacity="0.35" />
+            </linearGradient>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#d6a84b" />
+            </marker>
+          </defs>
+          <path class="flow-line" data-from="central-banks" data-to="commercial-banks" d="M600 85 C535 150 455 155 385 205" />
+          <path class="flow-line" data-from="commercial-banks" data-to="government" d="M385 205 C455 260 485 300 520 365" />
+          <path class="flow-line" data-from="government" data-to="bond-market" d="M520 365 C570 350 625 350 680 365" />
+          <path class="flow-line" data-from="bond-market" data-to="investors" d="M680 365 C760 300 820 260 895 205" />
+          <path class="flow-line" data-from="investors" data-to="financial-markets" d="M895 205 C830 335 815 455 790 560" />
+          <path class="flow-line" data-from="financial-markets" data-to="real-economy" d="M790 560 C680 625 520 635 405 560" />
+          <path class="flow-line" data-from="real-economy" data-to="commercial-banks" d="M405 560 C300 430 310 300 385 205" />
+          <path class="flow-line secondary-flow" data-from="central-banks" data-to="interest-rates" d="M600 85 C510 70 425 70 310 92" />
+          <path class="flow-line secondary-flow" data-from="central-banks" data-to="qe-qt" d="M600 85 C700 70 800 70 925 92" />
+          <path class="flow-line secondary-flow" data-from="interest-rates" data-to="bond-market" d="M310 92 C375 185 520 300 680 365" />
+          <path class="flow-line secondary-flow" data-from="qe-qt" data-to="bond-market" d="M925 92 C855 190 765 280 680 365" />
+          <path class="flow-line secondary-flow" data-from="inflation" data-to="central-banks" d="M185 395 C255 240 410 120 600 85" />
+          <path class="flow-line secondary-flow" data-from="currencies" data-to="capital-flows" d="M1015 397 C980 455 945 515 910 600" />
+          <path class="flow-line secondary-flow" data-from="reserve-currencies" data-to="dollar-system" d="M1015 520 C995 560 980 610 925 668" />
+          <path class="flow-line secondary-flow" data-from="dollar-system" data-to="capital-flows" d="M925 668 C900 640 895 625 910 600" />
+          <path class="flow-line risk-flow" data-from="currency-crises" data-to="currencies" d="M185 668 C320 730 820 730 1015 397" />
+          <path class="flow-line risk-flow" data-from="currency-crises" data-to="capital-flows" d="M185 668 C430 680 690 650 910 600" />
+        </svg>
+
+        <button class="map-node node-policy compact" style="--x:25.8%;--y:11.8%" data-id="interest-rates" type="button">
+          <span class="node-icon">%</span><span class="node-title">Interest Rates</span><span class="node-subtitle">Cost of money</span>
+        </button>
+        <button class="map-node" style="--x:50%;--y:11.2%" data-id="central-banks" type="button">
+          <span class="node-icon">CB</span><span class="node-title">Central Banks</span><span class="node-subtitle">Liquidity and policy</span>
+        </button>
+        <button class="map-node node-policy compact" style="--x:77.2%;--y:11.8%" data-id="qe-qt" type="button">
+          <span class="node-icon">QE</span><span class="node-title">QE / QT</span><span class="node-subtitle">Balance sheet policy</span>
+        </button>
+
+        <button class="map-node" style="--x:32%;--y:27%" data-id="commercial-banks" type="button">
+          <span class="node-icon">B</span><span class="node-title">Commercial Banks</span><span class="node-subtitle">Deposits and lending</span>
+        </button>
+        <button class="map-node" style="--x:75%;--y:27%" data-id="investors" type="button">
+          <span class="node-icon">I</span><span class="node-title">Investors</span><span class="node-subtitle">Capital allocation</span>
+        </button>
+
+        <button class="map-node node-risk compact" style="--x:15.5%;--y:51%" data-id="inflation" type="button">
+          <span class="node-icon">π</span><span class="node-title">Inflation</span><span class="node-subtitle">Purchasing power</span>
+        </button>
+        <button class="map-node" style="--x:43.5%;--y:48%" data-id="government" type="button">
+          <span class="node-icon">G</span><span class="node-title">Government</span><span class="node-subtitle">Tax, spend, borrow</span>
+        </button>
+        <button class="map-node" style="--x:56.5%;--y:48%" data-id="bond-market" type="button">
+          <span class="node-icon">Y</span><span class="node-title">Bond Market</span><span class="node-subtitle">Yields and debt</span>
+        </button>
+        <button class="map-node node-global compact" style="--x:84.6%;--y:51%" data-id="currencies" type="button">
+          <span class="node-icon">FX</span><span class="node-title">Currencies</span><span class="node-subtitle">Exchange rates</span>
+        </button>
+
+        <button class="map-node" style="--x:33.5%;--y:74%" data-id="real-economy" type="button">
+          <span class="node-icon">R</span><span class="node-title">Real Economy</span><span class="node-subtitle">Output and jobs</span>
+        </button>
+        <button class="map-node" style="--x:66%;--y:74%" data-id="financial-markets" type="button">
+          <span class="node-icon">M</span><span class="node-title">Financial Markets</span><span class="node-subtitle">Price discovery</span>
+        </button>
+
+        <button class="map-node node-risk compact" style="--x:16%;--y:88%" data-id="currency-crises" type="button">
+          <span class="node-icon">!</span><span class="node-title">Currency Crises</span><span class="node-subtitle">Confidence breakdown</span>
+        </button>
+        <button class="map-node node-global compact" style="--x:76%;--y:87%" data-id="capital-flows" type="button">
+          <span class="node-icon">↔</span><span class="node-title">Capital Flows</span><span class="node-subtitle">Cross-border money</span>
+        </button>
+        <button class="map-node node-global compact" style="--x:84.5%;--y:68%" data-id="reserve-currencies" type="button">
+          <span class="node-icon">$</span><span class="node-title">Reserve Currencies</span><span class="node-subtitle">Global trust</span>
+        </button>
+        <button class="map-node node-global compact" style="--x:77.5%;--y:96%" data-id="dollar-system" type="button">
+          <span class="node-icon">USD</span><span class="node-title">Dollar System</span><span class="node-subtitle">Global backbone</span>
+        </button>
+      </div>
+    <aside class="detail-panel open" id="detailPanel" aria-live="polite" aria-label="Selected map node details">
+      <button class="detail-close" type="button" aria-label="Close details">×</button>
+      <p class="detail-kicker">Selected system layer</p>
+      <h2 id="detailTitle">Central Banks</h2>
+      <p id="detailText">Central banks influence liquidity, interest rates, and confidence in money.</p>
+      <div class="detail-meta">
+        <span id="detailCategory">Core system</span>
+        <span id="detailImpact">High impact</span>
+      </div>
+      <a id="detailLink" class="detail-link" href="https://www.bondstats.org" target="_blank" rel="noopener">Open related guide →</a>
+    </aside>
+
+      </div>
+    </section>
+
+    <section class="modules" id="modules" aria-labelledby="modules-title">
+      <div class="section-heading">
+        <p class="eyebrow">Connected guides</p>
+        <h2 id="modules-title">Turn the map into a learning path</h2>
+      </div>
+      <div class="module-grid" id="moduleGrid"></div>
+    </section>
+
+    <section class="how-to-use" id="how-to-use" aria-labelledby="how-title">
+      <div class="section-heading">
+        <p class="eyebrow">How to use it</p>
+        <h2 id="how-title">A reference layer for BondStats</h2>
+      </div>
+      <div class="steps">
+        <article><span>01</span><h3>Explore the system</h3><p>Use the map to see how policy, banks, bonds, currencies, markets, and the real economy interact.</p></article>
+        <article><span>02</span><h3>Open the guides</h3><p>Each node points to a BondStats Learn page, turning complex monetary concepts into an organized path.</p></article>
+        <article><span>03</span><h3>Share the map</h3><p>Use the map as a signature BondStats asset for education, SEO, social media, and internal linking.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> BondStats. Monetary System Map™ v1.0.</p>
+    <p>Created and maintained by BondStats™. Visual design and system architecture © BondStats.</p>
+  </footer>
+
+  <script>
+const bondStatsBaseUrl = "https://www.bondstats.org";
+
+const nodes = {
+  "central-banks": {
+    title: "Central Banks",
+    category: "Core system",
+    impact: "High impact",
+    group: "core",
+    keywords: "central banks federal reserve ecb monetary policy liquidity interest rates reserves",
+    text: "Central banks influence liquidity, interest rates, and confidence in money. Their policy choices affect banks, bonds, currencies, inflation, and the real economy.",
+    link: "/central-banks/central-banks-and-bond-yields"
+  },
+  "commercial-banks": {
+    title: "Commercial Banks",
+    category: "Core system",
+    impact: "Money creation",
+    group: "core",
+    keywords: "commercial banks deposits lending money creation fractional reserve banking credit",
+    text: "Commercial banks create most modern money through lending. Loans create deposits, linking credit growth directly to money creation and economic activity.",
+    link: "/learn/what-is-money/fractional-reserve-banking"
+  },
+  "government": {
+    title: "Government",
+    category: "Core system",
+    impact: "Fiscal authority",
+    group: "core",
+    keywords: "government treasury spending taxation deficits debt issuance fiscal policy",
+    text: "Governments tax, spend, borrow, and issue debt. Their financing decisions connect public budgets with bond markets and investor demand.",
+    link: "/learn/insights/the-geopolitics-of-sovereign-debt"
+  },
+  "bond-market": {
+    title: "Bond Market",
+    category: "Core system",
+    impact: "Pricing money over time",
+    group: "core",
+    keywords: "bond market treasury bonds yields yield curve sovereign debt government bonds",
+    text: "Bond markets determine the cost of borrowing across time. Yields transmit expectations about inflation, growth, central banks, and sovereign risk.",
+    link: "/bond-market-hub"
+  },
+  "investors": {
+    title: "Investors",
+    category: "Core system",
+    impact: "Capital allocation",
+    group: "core",
+    keywords: "investors pension funds insurance companies asset managers foreign central banks sovereign wealth funds",
+    text: "Investors allocate capital across bonds, equities, currencies, commodities, and real assets. Their decisions turn savings into market prices.",
+    link: "/learn/switzerland/switzerland-and-global-capital-flows"
+  },
+  "financial-markets": {
+    title: "Financial Markets",
+    category: "Core system",
+    impact: "Price discovery",
+    group: "core",
+    keywords: "financial markets stocks bonds commodities currencies risk assets prices liquidity",
+    text: "Financial markets price risk, liquidity, growth, and future expectations. They connect policy, capital, and the real economy through asset prices.",
+    link: "/learn/insights/why-bond-markets-lead-everything"
+  },
+  "real-economy": {
+    title: "Real Economy",
+    category: "Core system",
+    impact: "Output and employment",
+    group: "core",
+    keywords: "real economy consumers businesses employment wages output investment consumption",
+    text: "The real economy is where households work, businesses invest, goods are produced, and income is spent. Monetary conditions eventually reach this layer.",
+    link: "/learn/what-is-money/what-is-a-monetary-system"
+  },
+  "interest-rates": {
+    title: "Interest Rates",
+    category: "Policy",
+    impact: "Cost of money",
+    group: "policy",
+    keywords: "interest rates policy rates borrowing costs central bank rates discount rate",
+    text: "Interest rates influence borrowing, saving, asset prices, currencies, and bond yields. They are one of the primary channels of monetary policy.",
+    link: "/central-banks/central-banks-and-bond-yields"
+  },
+  "inflation": {
+    title: "Inflation",
+    category: "Risk",
+    impact: "Purchasing power",
+    group: "risk",
+    keywords: "inflation prices purchasing power cpi cost of living money value",
+    text: "Inflation reduces purchasing power and changes the real value of money. It affects interest rates, bond yields, wages, currencies, and central bank policy.",
+    link: "/learn/what-is-money/inflation-explained"
+  },
+  "qe-qt": {
+    title: "QE / QT",
+    category: "Policy",
+    impact: "Balance sheet policy",
+    group: "policy",
+    keywords: "quantitative easing quantitative tightening qe qt asset purchases liquidity reserves balance sheet",
+    text: "Quantitative easing injects liquidity by purchasing financial assets. Quantitative tightening reduces liquidity by shrinking central bank balance sheets.",
+    link: "/learn/what-is-money/what-is-quantitative-easing"
+  },
+  "currencies": {
+    title: "Currencies",
+    category: "Global",
+    impact: "Exchange rates",
+    group: "global",
+    keywords: "currencies exchange rates fx dollar euro yen pound swiss franc",
+    text: "Currencies connect national monetary systems. Exchange rates move with interest rates, inflation, capital flows, confidence, and trade balances.",
+    link: "/learn/what-is-money/why-currencies-rise-and-fall"
+  },
+  "reserve-currencies": {
+    title: "Reserve Currencies",
+    category: "Global",
+    impact: "International trust",
+    group: "global",
+    keywords: "reserve currencies dollar euro central bank reserves foreign exchange reserves",
+    text: "Reserve currencies are held by central banks and governments for trade, reserves, and financial stability. They sit at the core of global monetary power.",
+    link: "/learn/what-is-money/reserve-currencies"
+  },
+  "dollar-system": {
+    title: "Dollar System",
+    category: "Global",
+    impact: "Global financial backbone",
+    group: "global",
+    keywords: "dollar system usd treasury market petrodollar eurodollar reserve currency global finance",
+    text: "The Dollar system links trade, reserves, commodities, banking, and Treasury markets. It gives the U.S. Dollar a central role in global finance.",
+    link: "/learn/insights/the-future-of-the-u-s-dollar-system"
+  },
+  "capital-flows": {
+    title: "Capital Flows",
+    category: "Global",
+    impact: "Cross-border movement",
+    group: "global",
+    keywords: "capital flows investment cross border flows global liquidity foreign investment reserves",
+    text: "Capital flows move savings across borders. They influence currencies, bond yields, financial stability, and the balance of power between economies.",
+    link: "/learn/switzerland/switzerland-and-global-capital-flows"
+  },
+  "currency-crises": {
+    title: "Currency Crises",
+    category: "Risk",
+    impact: "Confidence breakdown",
+    group: "risk",
+    keywords: "currency crisis depreciation capital flight inflation reserves devaluation confidence",
+    text: "Currency crises occur when confidence breaks down and a currency rapidly loses value. They often expose deeper problems in debt, reserves, inflation, or policy credibility.",
+    link: "/learn/what-is-money/what-is-a-currency-crisis"
+  }
+};
+
+const moduleDescriptions = [
+  ["Money Creation", "How bank lending expands deposits and increases the money supply.", "/learn/what-is-money/how-money-is-created"],
+  ["Government Bonds", "How sovereign debt connects governments, investors, and central banks.", "/learn/insights/the-geopolitics-of-sovereign-debt"],
+  ["Reserve Currencies", "Why some currencies become central to global reserves and trade.", "/learn/what-is-money/reserve-currencies"],
+  ["Currency Crises", "What happens when confidence in a currency breaks down.", "/learn/what-is-money/what-is-a-currency-crisis"],
+  ["Quantitative Easing", "How central banks create liquidity through asset purchases.", "/learn/what-is-money/what-is-quantitative-easing"],
+  ["The Dollar System", "Why the U.S. Dollar remains central to global finance.", "/learn/insights/the-future-of-the-u-s-dollar-system"],
+  ["Inflation", "How rising prices change purchasing power and monetary policy.", "/learn/what-is-money/inflation-explained"],
+  ["Capital Flows", "How money moves across borders and reshapes markets.", "/learn/switzerland/switzerland-and-global-capital-flows"]
+];
+
+const nodeButtons = [...document.querySelectorAll(".map-node")];
+const lines = [...document.querySelectorAll(".flow-line")];
+const detailPanel = document.getElementById("detailPanel");
+const detailTitle = document.getElementById("detailTitle");
+const detailText = document.getElementById("detailText");
+const detailCategory = document.getElementById("detailCategory");
+const detailImpact = document.getElementById("detailImpact");
+const detailLink = document.getElementById("detailLink");
+const searchInput = document.getElementById("searchInput");
+const mapStage = document.getElementById("mapStage");
+const themeToggle = document.querySelector(".theme-toggle");
+let currentFilter = "all";
+
+function setActiveNode(id) {
+  const node = nodes[id];
+  if (!node) return;
+
+  nodeButtons.forEach((button) => {
+    const isActive = button.dataset.id === id;
+    button.classList.toggle("active", isActive);
+    button.classList.toggle("dim", !isActive && !isConnected(id, button.dataset.id));
+  });
+
+  lines.forEach((line) => {
+    const active = line.dataset.from === id || line.dataset.to === id;
+    line.classList.toggle("active", active);
+    line.classList.toggle("dim", !active);
+  });
+
+  detailTitle.textContent = node.title;
+  detailText.textContent = node.text;
+  detailCategory.textContent = node.category;
+  detailImpact.textContent = node.impact;
+  detailLink.href = `${bondStatsBaseUrl}${node.link}`;
+  detailPanel.classList.add("open");
+}
+
+function isConnected(source, target) {
+  if (source === target) return true;
+  return lines.some((line) =>
+    (line.dataset.from === source && line.dataset.to === target) ||
+    (line.dataset.to === source && line.dataset.from === target)
+  );
+}
+
+function resetMap() {
+  nodeButtons.forEach((button) => button.classList.remove("active", "dim"));
+  lines.forEach((line) => line.classList.remove("active", "dim"));
+  detailPanel.classList.remove("open");
+  searchInput.value = "";
+  currentFilter = "all";
+  document.querySelectorAll(".filter-chip").forEach((chip) => chip.classList.toggle("active", chip.dataset.filter === "all"));
+  applyFilters();
+}
+
+function applyFilters() {
+  const query = searchInput.value.trim().toLowerCase();
+  nodeButtons.forEach((button) => {
+    const id = button.dataset.id;
+    const data = nodes[id];
+    const matchesFilter = currentFilter === "all" || data.group === currentFilter;
+    const searchable = `${data.title} ${data.category} ${data.impact} ${data.keywords} ${data.text}`.toLowerCase();
+    const matchesSearch = !query || searchable.includes(query);
+    button.classList.toggle("hidden-by-filter", !matchesFilter);
+    button.classList.toggle("hidden-by-search", !matchesSearch);
+  });
+}
+
+function createModuleCards() {
+  const grid = document.getElementById("moduleGrid");
+  grid.innerHTML = moduleDescriptions.map(([title, text, link]) => `
+    <article class="module-card">
+      <h3>${title}</h3>
+      <p>${text}</p>
+      <a href="${bondStatsBaseUrl}${link}" target="_blank" rel="noopener">Open guide →</a>
+    </article>
+  `).join("");
+}
+
+function applyTheme(theme) {
+  const isLight = theme === "light";
+  if (isLight) {
+    document.body.setAttribute("data-theme", "light");
+    document.documentElement.setAttribute("data-theme", "light");
+  } else {
+    document.body.removeAttribute("data-theme");
+    document.documentElement.removeAttribute("data-theme");
+  }
+  themeToggle.textContent = isLight ? "Dark mode" : "Light mode";
+  themeToggle.setAttribute("aria-pressed", String(isLight));
+  const themeColor = document.querySelector('meta[name="theme-color"]');
+  if (themeColor) themeColor.setAttribute("content", isLight ? "#f5f1e8" : "#07111f");
+}
+
+function loadTheme() {
+  const savedTheme = localStorage.getItem("bondstats-theme") || "dark";
+  applyTheme(savedTheme);
+}
+
+nodeButtons.forEach((button) => button.addEventListener("click", () => setActiveNode(button.dataset.id)));
+document.querySelector(".detail-close").addEventListener("click", () => detailPanel.classList.remove("open"));
+document.getElementById("resetMap").addEventListener("click", resetMap);
+document.getElementById("resetMapTop").addEventListener("click", resetMap);
+document.getElementById("animateFlows").addEventListener("click", () => mapStage.classList.toggle("animate"));
+searchInput.addEventListener("input", applyFilters);
+
+document.querySelectorAll(".filter-chip").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    currentFilter = chip.dataset.filter;
+    document.querySelectorAll(".filter-chip").forEach((item) => item.classList.remove("active"));
+    chip.classList.add("active");
+    applyFilters();
+  });
+});
+
+themeToggle.addEventListener("click", () => {
+  const nextTheme = document.body.dataset.theme === "light" ? "dark" : "light";
+  localStorage.setItem("bondstats-theme", nextTheme);
+  applyTheme(nextTheme);
+});
+
+document.getElementById("year").textContent = new Date().getFullYear();
+createModuleCards();
+loadTheme();
+setActiveNode("central-banks");
+
+  </script>
+</body>
+</html>
